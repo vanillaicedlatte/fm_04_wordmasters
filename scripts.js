@@ -1,6 +1,8 @@
-let wordChoices = [];
 let wordChoice = [];
 let initialIndex = 0;
+let wordOfTheDay = "booty";
+wordOfTheDayLetters = wordOfTheDay.split("");
+const map = makeMap(wordOfTheDayLetters);
 
 document.addEventListener('DOMContentLoaded', function () {
   let letterInputs = document.querySelectorAll(".letter-input");
@@ -39,19 +41,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
+    console.log("Keydown event triggered");
     let letterInputs = document.querySelectorAll(".letter-input");
     if (letterInputs[initialIndex + 4].value !== "") {
 
       for (i = initialIndex; i < initialIndex + 5; i++) {
+        console.log("Loop 0:", i);
         wordChoice += letterInputs[i].value;
         letterInputs[i].setAttribute("readonly", "readonly");
       }
-      wordChoices.push(wordChoice);
+      wordChoiceLetters = wordChoice.split("");
+      counter = 0;
+      for (i = initialIndex; i < initialIndex + 5; i++) {
+        console.log("Loop 1:", i, wordChoiceLetters[counter], wordOfTheDayLetters[counter]);
+        if (wordChoiceLetters[counter] == wordOfTheDayLetters[counter]) {
+          letterInputs[i].classList.add("green");
+          map[wordChoiceLetters[counter]]--;
+          console.log(map);
+          console.log("break");
+        }
+        counter++;
+      }
+      counter = 0;
+      for (i = initialIndex; i < initialIndex + 5; i++) {
+        console.log("Loop 2:", i, wordChoiceLetters[counter], wordOfTheDayLetters[counter]);
+        if (wordChoiceLetters[counter] == wordOfTheDayLetters[counter]) {
+          // do nothing
+        } else if ( wordOfTheDayLetters.includes(wordChoiceLetters[counter]) && map[wordChoiceLetters[counter]] > 0 ) {
+          letterInputs[i].classList.add("yellow");
+          map[wordChoiceLetters[counter]]--;
+          console.log(map);
+          console.log("break 2");
+        } else {
+          letterInputs[i].classList.add("grey");
+        }
+        counter++;
+      }
+
+
+      if (wordChoice == wordOfTheDay) {
+        console.log("true");
+
+      } else {
+        console.log("false");
+      }
 
       wordChoice = "";
       initialIndex = initialIndex + 5;
-      console.log(wordChoice);
-      console.log(wordChoices);
 
       if (initialIndex !== 30) {
         letterInputs[i].focus();
@@ -69,4 +105,17 @@ function isLetter(letter) {
 
 function round5(x) {
   return Math.ceil(x / 5) * 5;
+}
+
+function makeMap(array) {
+  const obj = {};
+  for (let i = 0; i < array.length; i++) {
+    const letter = array[i];
+    if (obj[letter]) {
+      obj[letter]++;
+    } else {
+      obj[letter] = 1;
+    }
+  }
+  return obj;
 }

@@ -56,3 +56,16 @@ input {
     text-align: center;
     border: none;
 }
+
+.green {
+    background-color: green;
+    color: white;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.grey {
+    background-color: grey;
+}
