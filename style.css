@@ -69,3 +69,7 @@ input {
 .grey {
     background-color: grey;
 }
+
+.hidden {
+    display: none;
+}

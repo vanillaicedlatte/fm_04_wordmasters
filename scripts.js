@@ -1,7 +1,27 @@
 let wordChoice = [];
 let initialIndex = 0;
-let wordOfTheDay = "booty";
-let wordOfTheDayLetters = wordOfTheDay.split("");
+let wordOfTheDayLetters = [];
+
+async function fetchWordOfTheDay() {
+  const apiUrl = "https://words.dev-apis.com/word-of-the-day";
+
+  try {
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    const wordOfTheDay = data.word;
+    wordOfTheDayLetters = wordOfTheDay.split("");
+    console.log("Word of the day letters:", wordOfTheDayLetters);
+
+  } catch (error) {
+    console.error("Error fetching word of the day:", error.message);
+  }
+}
+
+fetchWordOfTheDay();
 
 document.addEventListener('DOMContentLoaded', function () {
   let letterInputs = document.querySelectorAll(".letter-input");
@@ -74,13 +94,27 @@ document.addEventListener("keydown", function (event) {
         counter++;
       }
 
+      console.log(initialIndex);
 
-      if (wordChoice == wordOfTheDay) {
+      if (initialIndex === 25 && wordChoiceLetters.some((letter, index) => letter != wordOfTheDayLetters[index])) {
+        youLost = document.querySelector(".you-lost");
+        youLost.innerText = `You lost! You did not guess the word of the day.`
+        youLost.classList.remove("hidden");
+      }
+      
+
+      console.log(wordChoiceLetters);
+
+      if (wordChoiceLetters.every((letter, index) => letter === wordOfTheDayLetters[index])) {
         console.log("true");
+        youWon = document.querySelector(".you-won");
+        youWon.innerText = `You won! That was the word of the day.`
+        youWon.classList.remove("hidden");
 
+        endGame();
       } else {
         console.log("false");
-      }
+      }      
 
       wordChoice = "";
       initialIndex = initialIndex + 5;
@@ -89,12 +123,11 @@ document.addEventListener("keydown", function (event) {
         // Use initialIndex instead of i
         letterInputs[initialIndex].focus();
         letterInputs[initialIndex].select();
-      }
+      } 
     } else {
       alert("You have to enter a value");
     }
 
-    Object.keys(map).forEach(key => (map[key] = 0));
   }
 });
 
@@ -117,4 +150,11 @@ function makeMap(array) {
     }
   }
   return obj;
+}
+
+function endGame() {
+  let letterInputs = document.querySelectorAll(".letter-input");
+  letterInputs.forEach((input, index, array) => {
+    input.setAttribute("readonly", "readonly");
+  });
 }
