@@ -1,8 +1,7 @@
 let wordChoice = [];
 let initialIndex = 0;
 let wordOfTheDay = "booty";
-wordOfTheDayLetters = wordOfTheDay.split("");
-const map = makeMap(wordOfTheDayLetters);
+let wordOfTheDayLetters = wordOfTheDay.split("");
 
 document.addEventListener('DOMContentLoaded', function () {
   let letterInputs = document.querySelectorAll(".letter-input");
@@ -41,37 +40,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
-    console.log("Keydown event triggered");
     let letterInputs = document.querySelectorAll(".letter-input");
     if (letterInputs[initialIndex + 4].value !== "") {
 
+      const map = makeMap(wordOfTheDayLetters);
+
       for (i = initialIndex; i < initialIndex + 5; i++) {
-        console.log("Loop 0:", i);
         wordChoice += letterInputs[i].value;
         letterInputs[i].setAttribute("readonly", "readonly");
       }
+
       wordChoiceLetters = wordChoice.split("");
+
       counter = 0;
+
       for (i = initialIndex; i < initialIndex + 5; i++) {
-        console.log("Loop 1:", i, wordChoiceLetters[counter], wordOfTheDayLetters[counter]);
         if (wordChoiceLetters[counter] == wordOfTheDayLetters[counter]) {
           letterInputs[i].classList.add("green");
           map[wordChoiceLetters[counter]]--;
-          console.log(map);
-          console.log("break");
         }
         counter++;
       }
       counter = 0;
       for (i = initialIndex; i < initialIndex + 5; i++) {
-        console.log("Loop 2:", i, wordChoiceLetters[counter], wordOfTheDayLetters[counter]);
         if (wordChoiceLetters[counter] == wordOfTheDayLetters[counter]) {
           // do nothing
         } else if ( wordOfTheDayLetters.includes(wordChoiceLetters[counter]) && map[wordChoiceLetters[counter]] > 0 ) {
           letterInputs[i].classList.add("yellow");
           map[wordChoiceLetters[counter]]--;
-          console.log(map);
-          console.log("break 2");
         } else {
           letterInputs[i].classList.add("grey");
         }
@@ -90,14 +86,17 @@ document.addEventListener("keydown", function (event) {
       initialIndex = initialIndex + 5;
 
       if (initialIndex !== 30) {
-        letterInputs[i].focus();
-        letterInputs[i].select();
+        // Use initialIndex instead of i
+        letterInputs[initialIndex].focus();
+        letterInputs[initialIndex].select();
       }
     } else {
       alert("You have to enter a value");
     }
+
+    Object.keys(map).forEach(key => (map[key] = 0));
   }
-})
+});
 
 function isLetter(letter) {
   return /^[a-zA-Z]$/.test(letter);
