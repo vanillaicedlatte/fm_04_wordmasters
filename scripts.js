@@ -257,3 +257,5 @@ function deleteRow() {
     initialIndex = initialIndex - 5;
 
 }
+
+// emoji celebration
